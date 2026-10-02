@@ -1,0 +1,14 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Configurações locais do Anki (CONTÉM A SUA API KEY PRIVADA)
+meta.json
+
+# Ambientes virtuais e IDEs
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+.env

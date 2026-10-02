@@ -1,0 +1,6 @@
+{
+  "name": "Gemini AI English Assistant",
+  "package": "gemini_english_ai",
+  "min_point_version": 50,
+  "max_point_version": 0
+}
