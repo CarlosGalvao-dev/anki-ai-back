@@ -174,29 +174,45 @@ def add_gemini_editor_button(buttons: list, editor):
     config = config_manager.load_config()
     shortcut = config.get("shortcut", "Ctrl+Shift+G")
 
-    # Caminho do ícone
+    # Escolhe um ícone monocromático com contraste adequado ao tema do Anki.
     base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    icon_path = os.path.join(base_dir, "assets", "gemini_icon.png")
+    assets_dir = os.path.join(base_dir, "assets")
+    dark_icon = os.path.join(assets_dir, "gemini_icon.png")
+    light_icon = os.path.join(assets_dir, "gemini_icon_light.png")
+    icon_path = dark_icon
+    try:
+        from aqt.qt import QPalette
+        parent = getattr(editor, "parentWindow", None)
+        if parent:
+            palette_type = getattr(QPalette, "ColorRole", QPalette)
+            window_role = getattr(palette_type, "Window", None)
+            if window_role is not None:
+                background = parent.palette().color(window_role)
+                if background.lightness() >= 128:
+                    icon_path = light_icon
+    except (ImportError, AttributeError, TypeError):
+        pass
+
     if not os.path.exists(icon_path):
-        icon_path = None
+        icon_path = dark_icon if os.path.exists(dark_icon) else None
 
     try:
         btn = editor.addButton(
             icon=icon_path,
             cmd="gemini_english_generate",
             func=lambda ed=editor: on_generate_button_clicked(ed),
-            label="" if icon_path else "✨ Gemini",
-            tip=f"Gerar card de Inglês com Gemini AI ({shortcut})",
+            label="" if icon_path else "✦",
+            tip="Gerar card com IA",
             keys=shortcut,
-            rightside=False
+            rightside=True
         )
     except TypeError:
         btn = editor.addButton(
             icon=icon_path,
             cmd="gemini_english_generate",
             func=lambda ed=editor: on_generate_button_clicked(ed),
-            label="" if icon_path else "✨ Gemini",
-            tip=f"Gerar card de Inglês com Gemini AI ({shortcut})",
+            label="" if icon_path else "✦",
+            tip="Gerar card com IA",
             keys=shortcut
         )
     buttons.append(btn)
